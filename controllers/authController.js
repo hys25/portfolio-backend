@@ -1,5 +1,7 @@
+const asyncHandler = require('express-async-handler')
+
 // POST     registration
-const registration = (req, res) => {
+const registration = asyncHandler(async (req, res) => {
     if(!req.body.email && !req.body.password && !req.body.username) {
     res.status(400)
     throw new Error("All fields are required")
@@ -16,9 +18,9 @@ const registration = (req, res) => {
   res.status(200).send({
     "message": "REGISTRATION",
   })
-}
+})
 // POST     sing in
-const login = (req, res) => {
+const login = asyncHandler(async (req, res) => {
   if(!req.body.email && !req.body.password) {
     res.status(400)
     throw new Error("Please add an email address and password")
@@ -32,10 +34,10 @@ const login = (req, res) => {
   res.status(200).send({
     "message": "LOGIN",
   })
-}
+})
 
 // POST     forgot password
-const forgotPassword = (req, res) => {
+const forgotPassword = asyncHandler(async (req, res) => {
   if(!req.body.email) {
     res.status(400)
     throw new Error("Please add an email address")
@@ -43,7 +45,7 @@ const forgotPassword = (req, res) => {
   res.status(200).send({
     "message": "forgotPassword",
   })
-}
+})
 
 module.exports = {
   registration,
