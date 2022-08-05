@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const Auth = require('../models/authModel')
 
-// POST     registration
+// POST  registration  /api/auth/register
 const registration = asyncHandler(async (req, res) => {
   const {password, email, username} = req.body
   if(!email && !password && !username) {
@@ -53,7 +53,7 @@ const registration = asyncHandler(async (req, res) => {
   res.status(200).json({user})
 })
 
-// POST     sing in
+// POST  sing in  /api/auth/login
 const login = asyncHandler(async (req, res) => {
   const {password, email} = req.body
   if(!email && !password) {
@@ -83,7 +83,7 @@ const login = asyncHandler(async (req, res) => {
   }
 })
 
-// POST     forgot password
+// POST  forgot password  /api/auth/forgot-password
 const forgotPassword = asyncHandler(async (req, res) => {
   if(!req.body.email) {
     res.status(400)
@@ -95,14 +95,17 @@ const forgotPassword = asyncHandler(async (req, res) => {
   res.status(200).json({user})
 })
 
-// GET     get user user
+// GET  get user data  /api/auth/me
 const getMe = asyncHandler(async (req, res) => {
-  res.json({
-    "message": "User user display",
+  const {_id, username, email} = await Auth.findById(req.user.id)
+  res.status(200).json({
+    id: _id,
+    username,
+    email
   })
 })
 
-//Generate JWT
+// Generate JWT
 const generateToken = (id) => {
   return jwt.sign({id}, process.env.JWT_SECRET, {
     expiresIn: '30d'
