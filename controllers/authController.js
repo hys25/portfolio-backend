@@ -1,43 +1,74 @@
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
-
 const Auth = require('../models/authModel')
 
 // POST     registration
 const registration = asyncHandler(async (req, res) => {
-    if(!req.body.email && !req.body.password && !req.body.username) {
+  const {password, email, username} = req.body
+  if(!email && !password && !username) {
     res.status(400)
     throw new Error("All fields are required")
-  } else if (!req.body.password){
+  } else if (!password){
     res.status(400)
     throw new Error("Please add an password")
-  } else if (!req.body.email) {
+  } else if (!email) {
     res.status(400)
     throw new Error("Please add an email address")
-  } else if (!req.body.username) {
+  } else if (!username) {
     res.status(400)
     throw new Error("Please add your username")
   }
-  res.status(200).send({
-    "message": "REGISTRATION",
+
+  //Check if user exists
+  const userExist = await Auth.findOne({email})
+  if(userExist){
+    res.status(400)
+    throw new Error("User already exists")
+  }
+
+  //Hash password
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(password, salt)
+
+  //Create user
+  const user = await Auth.create({
+    email,
+    password: hashedPassword,
+    username,
   })
+
+  if(user){
+    res.status(201).json({
+      _id: user._id,
+      email: user.email,
+      username: user.username,
+    })
+  } else {
+    res.status(400)
+    throw new Error("Invalid user data")
+  }
+
+  res.status(200).json({user})
 })
 // POST     sing in
 const login = asyncHandler(async (req, res) => {
-  if(!req.body.email && !req.body.password) {
+  const {password, email} = req.body
+  if(!email && !password) {
     res.status(400)
     throw new Error("Please add an email address and password")
-  } else if (!req.body.password){
+  } else if (!password){
     res.status(400)
     throw new Error("Please add an password")
-  } else if (!req.body.email) {
+  } else if (!email) {
     res.status(400)
     throw new Error("Please add an email address")
   }
-  const data = await Auth.create({
-    email: req.body.email,
-    password: req.body.password,
+  const user = await Auth.create({
+    email: email,
+    password: password,
   })
-  res.status(200).json(data)
+  res.status(200).json({user})
 })
 
 // POST     forgot password
@@ -46,13 +77,22 @@ const forgotPassword = asyncHandler(async (req, res) => {
     res.status(400)
     throw new Error("Please add an email address")
   }
-  res.status(200).send({
-    "message": "forgotPassword",
+  const user = await Auth.create({
+    email: email,
+  })
+  res.status(200).json({user})
+})
+
+// GET     get user user
+const getMe = asyncHandler(async (req, res) => {
+  res.json({
+    "message": "User user display",
   })
 })
 
 module.exports = {
   registration,
   login,
-  forgotPassword
+  forgotPassword,
+  getMe
 }
