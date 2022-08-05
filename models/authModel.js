@@ -9,6 +9,10 @@ const authSchema = mongoose.Schema({
     type: 'string',
     required: [true, 'Please add password']
   },
+  username: {
+    type: 'string',
+    required: [true, 'Please add username']
+  },
 },{
   timestamps: true,
 })

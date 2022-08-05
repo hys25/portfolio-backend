@@ -43,6 +43,7 @@ const registration = asyncHandler(async (req, res) => {
       _id: user._id,
       email: user.email,
       username: user.username,
+      token: generateToken(user._id)
     })
   } else {
     res.status(400)
@@ -51,6 +52,7 @@ const registration = asyncHandler(async (req, res) => {
 
   res.status(200).json({user})
 })
+
 // POST     sing in
 const login = asyncHandler(async (req, res) => {
   const {password, email} = req.body
@@ -64,11 +66,21 @@ const login = asyncHandler(async (req, res) => {
     res.status(400)
     throw new Error("Please add an email address")
   }
-  const user = await Auth.create({
-    email: email,
-    password: password,
-  })
-  res.status(200).json({user})
+
+   //Check for user
+  const user = await Auth.findOne({email})
+
+  if(user && (await bcrypt.compare(password, user.password))) {
+    res.status(201).json({
+      _id: user._id,
+      email: user.email,
+      username: user.username,
+      token: generateToken(user._id)
+    })
+  } else {
+    res.status(400)
+    throw new Error("Invalid credentials")
+  }
 })
 
 // POST     forgot password
@@ -89,6 +101,13 @@ const getMe = asyncHandler(async (req, res) => {
     "message": "User user display",
   })
 })
+
+//Generate JWT
+const generateToken = (id) => {
+  return jwt.sign({id}, process.env.JWT_SECRET, {
+    expiresIn: '30d'
+  })
+}
 
 module.exports = {
   registration,
