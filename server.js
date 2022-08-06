@@ -13,6 +13,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
 app.use('/auth', require('./routes/authRoutes'))
+app.use('/', require('./routes/projectRoutes'))
 
 app.use(errorHandler)
 
