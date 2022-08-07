@@ -6,7 +6,7 @@ const { protect } = require('../middleware/protectAuthMiddleware')
 router.get('/projects', getProjects)
 router.get('/project', getProject)
 router.post('/project', setProject)
-router.put('/project', updateProject)
-router.delete('/project', deleteProject)
+router.put('/project/:id', updateProject)
+router.delete('/project/:id', deleteProject)
 
 module.exports = router

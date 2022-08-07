@@ -32,14 +32,29 @@ const setProject = asyncHandler(async (req, res) => {
   res.status(200).json(project)
 })
 
-// PUT  update project  /api/project
+// PUT  update project  /api/project/:id
 const updateProject = asyncHandler(async (req, res) => {
-  //
+  console.log('req', req)
+  const project = await Project.findById(req.params.id)
+  if(!project) {
+    res.status(400)
+    throw new Error("Project not found")
+  }
+  const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, {
+    new: true
+  })
+  res.status(200).json(updatedProject)
 })
 
-// DELETE  delete project  /api/project
+// DELETE  delete project  /api/project/:id
 const deleteProject = asyncHandler(async (req, res) => {
-  //
+  const project = await Project.findById(req.params.id)
+  if(!project) {
+    res.status(400)
+    throw new Error("Project not found")
+  }
+  await project.remove()
+  res.status(200).json({id: req.params.id})
 })
 
 module.exports = {
