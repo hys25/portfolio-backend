@@ -1,27 +1,27 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
-const Auth = require('../models/authModel')
+const User = require('../models/userModel')
 
-// POST  registration  /api/auth/register
-const registration = asyncHandler(async (req, res) => {
+// POST  signUp  /api/auth/sign-up
+const signUp = asyncHandler(async (req, res) => {
   const {password, email, username} = req.body
-  if(!email && !password && !username) {
-    res.status(400)
-    throw new Error("All fields are required")
-  } else if (!password){
+  if (!password){
     res.status(400)
     throw new Error("Please add an password")
-  } else if (!email) {
+  }
+  if (!email) {
     res.status(400)
     throw new Error("Please add an email address")
-  } else if (!username) {
+  }
+  if (!username) {
     res.status(400)
     throw new Error("Please add your username")
   }
 
   //Check if user exists
-  const userExist = await Auth.findOne({email})
+  const userExist = await User.findOne({email})
+  console.log('userExist', userExist)
   if(userExist){
     res.status(400)
     throw new Error("User already exists")
@@ -31,44 +31,39 @@ const registration = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10)
   const hashedPassword = await bcrypt.hash(password, salt)
 
-  //Create user
-  const user = await Auth.create({
+  const newUser = await User.create({
     email,
     password: hashedPassword,
     username,
   })
 
-  if(user){
-    res.status(201).json({
-      _id: user._id,
-      email: user.email,
-      username: user.username,
-      token: generateToken(user._id)
-    })
-  } else {
+  if(!newUser){
     res.status(400)
     throw new Error("Invalid user data")
   }
 
-  res.status(200).json({user})
+  res.status(201).json({
+    _id: newUser._id,
+    email: newUser.email,
+    username: newUser.username,
+    token: generateToken(newUser._id)
+  })
 })
 
-// POST  sing in  /api/auth/login
-const login = asyncHandler(async (req, res) => {
+// POST  singIn  /api/auth/sing-in
+const singIn = asyncHandler(async (req, res) => {
   const {password, email} = req.body
-  if(!email && !password) {
+  if (!password){
     res.status(400)
-    throw new Error("Please add an email address and password")
-  } else if (!password){
-    res.status(400)
-    throw new Error("Please add an password")
-  } else if (!email) {
+    throw new Error("Please add a password")
+  }
+  if (!email) {
     res.status(400)
     throw new Error("Please add an email address")
   }
 
    //Check for user
-  const user = await Auth.findOne({email})
+  const user = await User.findOne({email})
 
   if(user && (await bcrypt.compare(password, user.password))) {
     res.status(201).json({
@@ -83,28 +78,6 @@ const login = asyncHandler(async (req, res) => {
   }
 })
 
-// POST  forgot password  /api/auth/forgot-password
-const forgotPassword = asyncHandler(async (req, res) => {
-  if(!req.body.email) {
-    res.status(400)
-    throw new Error("Please add an email address")
-  }
-  const user = await Auth.create({
-    email: email,
-  })
-  res.status(200).json({user})
-})
-
-// GET  get user data  /api/auth/me
-const getMe = asyncHandler(async (req, res) => {
-  const {_id, username, email} = await Auth.findById(req.user.id)
-  res.status(200).json({
-    id: _id,
-    username,
-    email
-  })
-})
-
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -113,8 +86,6 @@ const generateToken = (id) => {
 }
 
 module.exports = {
-  registration,
-  login,
-  forgotPassword,
-  getMe
+  signUp,
+  singIn,
 }

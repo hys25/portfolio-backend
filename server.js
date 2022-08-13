@@ -12,6 +12,7 @@ connectDB()
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
+app.use('/user', require('./routes/userRoutes'))
 app.use('/auth', require('./routes/authRoutes'))
 app.use('/', require('./routes/projectRoutes'))
 
