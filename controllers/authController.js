@@ -21,7 +21,6 @@ const signUp = asyncHandler(async (req, res) => {
 
   //Check if user exists
   const userExist = await User.findOne({email})
-  console.log('userExist', userExist)
   if(userExist){
     res.status(400)
     throw new Error("User already exists")
@@ -50,8 +49,8 @@ const signUp = asyncHandler(async (req, res) => {
   })
 })
 
-// POST  singIn  /api/auth/sing-in
-const singIn = asyncHandler(async (req, res) => {
+// POST  signIn  /api/auth/sign-in
+const signIn = asyncHandler(async (req, res) => {
   const {password, email} = req.body
   if (!password){
     res.status(400)
@@ -87,5 +86,5 @@ const generateToken = (id) => {
 
 module.exports = {
   signUp,
-  singIn,
+  signIn,
 }
