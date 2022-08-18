@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
+const { generateToken } = require('../utils/generateToken')
 
 // POST  signUp  /api/auth/sign-up
 const signUp = asyncHandler(async (req, res) => {
@@ -64,25 +64,20 @@ const signIn = asyncHandler(async (req, res) => {
    //Check for user
   const user = await User.findOne({email})
 
-  if(user && (await bcrypt.compare(password, user.password))) {
-    res.status(201).json({
-      _id: user._id,
-      email: user.email,
-      username: user.username,
-      token: generateToken(user._id)
-    })
-  } else {
+  const isPasswordMatch = await bcrypt.compare(password, user.password)
+
+  if(!user || !isPasswordMatch) {
     res.status(400)
     throw new Error("Invalid credentials")
   }
-})
 
-// Generate JWT
-const generateToken = (id) => {
-  return jwt.sign({id}, process.env.JWT_SECRET, {
-    expiresIn: '30d'
+  res.status(201).json({
+    _id: user._id,
+    email: user.email,
+    username: user.username,
+    token: generateToken(user._id)
   })
-}
+})
 
 module.exports = {
   signUp,
