@@ -27,7 +27,13 @@ const projectSchema = mongoose.Schema({
     type: 'string',
     required: [true, 'Please add main image of project']
   },
+  main_image_url: {
+    type: 'string',
+  },
   background_image: {
+    type: 'string'
+  },
+  background_image_url: {
     type: 'string'
   },
 },{

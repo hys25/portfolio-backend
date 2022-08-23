@@ -152,6 +152,13 @@
 							],
 							"path": [
 								"project"
+							],
+							"query": [
+								{
+									"key": "project_name",
+									"value": null,
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -162,6 +169,51 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "project_name",
+									"value": "project_name testds",
+									"type": "text"
+								},
+								{
+									"key": "website_link",
+									"value": "website_link test",
+									"type": "text"
+								},
+								{
+									"key": "project_stack",
+									"value": "project_stack test",
+									"type": "text"
+								},
+								{
+									"key": "project_description",
+									"value": "project_description test",
+									"type": "text"
+								},
+								{
+									"key": "your_impact",
+									"value": "your_impact test",
+									"type": "text"
+								},
+								{
+									"key": "brand_color",
+									"value": "brand_color test",
+									"type": "text"
+								},
+								{
+									"key": "main_image",
+									"type": "file",
+									"src": "/Users/admin/Desktop/screenshot/Screenshot 2022-08-22 at 4.37.07 PM.png"
+								},
+								{
+									"key": "background_image",
+									"type": "file",
+									"src": "/Users/admin/Desktop/screenshot/Screenshot 2022-08-22 at 5.11.29 PM.png"
+								}
+							]
+						},
 						"url": {
 							"raw": "{{BASE_URL}}/project",
 							"host": [

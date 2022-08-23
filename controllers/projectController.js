@@ -9,14 +9,14 @@ const getProjects = asyncHandler(async (req, res) => {
   res.status(200).json(projects)
 })
 
-// GET  get project  /api/project
+// GET  get project  /api/project/:id
 const getProject = asyncHandler(async (req, res) => {
-  const {_id, username, email} = await Project.findById(req.user.id)
-  res.status(200).json({
-    id: _id,
-    username,
-    email
-  })
+  if(!req.params.id){
+    res.status(400)
+    throw new Error("Provide project's id")
+  }
+  const project = await Project.findById(req.params.id)
+  res.status(200).json(project)
 })
 
 // POST  add project  /api/project
@@ -30,7 +30,9 @@ const setProject = asyncHandler(async (req, res) => {
       your_impact: req.body.your_impact,
       brand_color: req.body.brand_color,
       main_image: req.files.main_image[0].filename,
+      main_image_url: req.files.main_image[0].path,
       background_image: req.files.background_image[0].filename,
+      background_image_url: req.files.background_image[0].path,
     })
     res.status(200).json(project)
   } catch (error) {
@@ -40,7 +42,6 @@ const setProject = asyncHandler(async (req, res) => {
 
 // PUT  update project  /api/project/:id
 const updateProject = asyncHandler(async (req, res) => {
-  console.log('req', req)
   const project = await Project.findById(req.params.id)
   if(!project) {
     res.status(400)
