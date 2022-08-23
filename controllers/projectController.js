@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const Project = require('../models/projectModel')
 
-
 // GET  get all projects  /api/projects
 const getProjects = asyncHandler(async (req, res) => {
   const projects = await Project.find()
@@ -22,14 +21,21 @@ const getProject = asyncHandler(async (req, res) => {
 
 // POST  add project  /api/project
 const setProject = asyncHandler(async (req, res) => {
-  if(!req.body.text) {
-    res.status(400)
-    throw new Error("Please add a text for project")
+  try {
+    const project = await Project.create({
+      project_name: req.body.project_name,
+      website_link: req.body.website_link,
+      project_stack: req.body.project_stack,
+      project_description:  req.body.project_description,
+      your_impact: req.body.your_impact,
+      brand_color: req.body.brand_color,
+      main_image: req.files.main_image[0].filename,
+      background_image: req.files.background_image[0].filename,
+    })
+    res.status(200).json(project)
+  } catch (error) {
+    throw new Error(error)
   }
-  const project = await Project.create({
-    text: req.body.text,
-  })
-  res.status(200).json(project)
 })
 
 // PUT  update project  /api/project/:id
