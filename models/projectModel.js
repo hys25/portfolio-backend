@@ -5,6 +5,9 @@ const projectSchema = mongoose.Schema({
     type: 'string',
     required: [true, 'Please add project name']
   },
+  main_project: {
+    type: 'boolean',
+  },
   website_link: {
     type: 'string',
     required: [true, 'Please add link to website']

@@ -24,6 +24,7 @@ const setProject = asyncHandler(async (req, res) => {
   try {
     const project = await Project.create({
       project_name: req.body.project_name,
+      main_project: req.body.main_project,
       website_link: req.body.website_link,
       project_stack: req.body.project_stack,
       project_description:  req.body.project_description,
