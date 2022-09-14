@@ -63,12 +63,22 @@ const updateProject = asyncHandler(async (req, res) => {
   if(req?.files?.main_image) {
     mainImage = req.files.main_image[0].filename
     mainImageUrl = req.files.main_image[0].path.replace('public/', '')
-    await unlinkAsync(`public/${project.main_image_url}`)
+    try {
+      await unlinkAsync(`public/${project.main_image_url}`)
+    } catch (error) {
+      res.status(500)
+      throw new Error("Previous image is not deleted")
+    }
   }
   if(req?.files?.background_image) {
     backgroundImage = req.files.background_image[0].filename
     backgroundImageUrl = req.files.background_image[0].path.replace('public/', '')
-    await unlinkAsync(`public/${project.background_image_url}`)
+    try {
+      await unlinkAsync(`public/${project.background_image_url}`)
+    } catch (error) {
+      res.status(500)
+      throw new Error("Previous image is not deleted")
+    }
   }
 
   const updatedProject = await Project.findByIdAndUpdate(req.params.id, {
