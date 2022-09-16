@@ -19,7 +19,7 @@ app.use(express.static('public'))
 
 app.use('/user', require('./routes/userRoutes'))
 app.use('/auth', require('./routes/authRoutes'))
-app.use('/', require('./routes/projectRoutes'))
+app.use('/project', require('./routes/projectRoutes'))
 
 app.use(errorHandler)
 

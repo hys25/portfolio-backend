@@ -1,7 +1,5 @@
 const fs = require('fs')
 const { promisify } = require('util')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const Project = require('../models/projectModel')
 
