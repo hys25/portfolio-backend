@@ -100,11 +100,14 @@ const updateProject = asyncHandler(async (req, res) => {
 // DELETE  delete project  /api/project/:id
 const deleteProject = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.id)
+
   if(!project) {
     res.status(400)
     throw new Error("Project not found")
   }
   await project.remove()
+  await unlinkAsync(`public/${project.main_image_url}`)
+  await unlinkAsync(`public/${project.background_image_url}`)
   res.status(200).json({id: req.params.id})
 })
 
