@@ -66,8 +66,7 @@ const updateProject = asyncHandler(async (req, res) => {
     try {
       await unlinkAsync(`public/${project.main_image_url}`)
     } catch (error) {
-      res.status(500)
-      throw new Error("Previous image is not deleted")
+      res.status(500).json(error)
     }
   }
   if(req?.files?.background_image) {
@@ -76,8 +75,7 @@ const updateProject = asyncHandler(async (req, res) => {
     try {
       await unlinkAsync(`public/${project.background_image_url}`)
     } catch (error) {
-      res.status(500)
-      throw new Error("Previous image is not deleted")
+      res.status(500).json(error)
     }
   }
 
@@ -102,11 +100,18 @@ const updateProject = asyncHandler(async (req, res) => {
 // DELETE  delete project  /api/project/:id
 const deleteProject = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.id)
+
   if(!project) {
     res.status(400)
     throw new Error("Project not found")
   }
-  await project.remove()
+  try {
+      await project.remove()
+      await unlinkAsync(`public/${project.main_image_url}`)
+      await unlinkAsync(`public/${project.background_image_url}`)
+    } catch (error) {
+      return res.status(500).json(error)
+    }
   res.status(200).json({id: req.params.id})
 })
 
