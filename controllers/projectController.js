@@ -105,9 +105,13 @@ const deleteProject = asyncHandler(async (req, res) => {
     res.status(400)
     throw new Error("Project not found")
   }
-  await project.remove()
-  await unlinkAsync(`public/${project.main_image_url}`)
-  await unlinkAsync(`public/${project.background_image_url}`)
+  try {
+      await project.remove()
+      await unlinkAsync(`public/${project.main_image_url}`)
+      await unlinkAsync(`public/${project.background_image_url}`)
+    } catch (error) {
+      return res.status(500).json(error)
+    }
   res.status(200).json({id: req.params.id})
 })
 
