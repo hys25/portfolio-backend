@@ -33,17 +33,17 @@ const updateSkill = asyncHandler(async (req, res) => {
     }, {
     new: true
   })
-  res.status(200).json(updatedSkill)
+  try {
+    res.status(200).json(updatedSkill)
+  } catch (error) {
+    return res.status(500).json(error)
+  }
 })
 
 // DELETE  delete skill  /api/skills/:id
 const deleteSkill = asyncHandler(async (req, res) => {
-  const skill = await SkillsModel.findById(req.params.id)
-  if(!skill) {
-    res.status(400)
-    throw new Error("Skill is not found")
-  }
   try {
+    const skill = await SkillsModel.findById(req.params.id)
     res.status(200).json(skill)
     return await skill.remove()
   } catch (error) {
