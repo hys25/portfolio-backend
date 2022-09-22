@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { getSkills, setSkill, updateSkill, deleteSkill } = require('../controllers/skillsController')
+const { getSkills, setSkill, updateSkill, deleteSkill } = require('../controllers/skillController')
 
 router.get('/', getSkills)
 router.post('/', setSkill)

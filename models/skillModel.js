@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const skillsSchema = mongoose.Schema({
+const skillSchema = mongoose.Schema({
   skill_name: {
     type: 'string',
     required: [true, 'Please add skill name']
@@ -9,4 +9,4 @@ const skillsSchema = mongoose.Schema({
   timestamps: true,
 })
 
-module.exports = mongoose.model('SkillsModel', skillsSchema)
+module.exports = mongoose.model('SkillModel', skillSchema)

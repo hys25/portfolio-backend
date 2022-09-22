@@ -1,16 +1,16 @@
 const asyncHandler = require('express-async-handler')
-const SkillsModel = require('../models/skillsModel')
+const SkillModel = require('../models/skillModel')
 
-// GET  get all skills  /api/skills
+// GET  get all skills  /api/skill
 const getSkills = asyncHandler(async (req, res) => {
-  const skills = await SkillsModel.find()
+  const skills = await SkillModel.find()
   res.status(200).json(skills)
 })
 
-// POST  add skill  /api/skills
+// POST  add skill  /api/skill
 const setSkill = asyncHandler(async (req, res) => {
   try {
-    const skill = await SkillsModel.create({
+    const skill = await SkillModel.create({
       skill_name: req.body.skill_name,
     })
     res.status(200).json(skill)
@@ -20,15 +20,15 @@ const setSkill = asyncHandler(async (req, res) => {
   }
 })
 
-// PUT  update skill  /api/skills/:id
+// PUT  update skill  /api/skill/:id
 const updateSkill = asyncHandler(async (req, res) => {
-  const skill = await SkillsModel.findById(req.params.id)
+  const skill = await SkillModel.findById(req.params.id)
   if(!skill) {
     res.status(400)
     throw new Error("Skill is not found")
   }
 
-  const updatedSkill = await SkillsModel.findByIdAndUpdate(req.params.id, {
+  const updatedSkill = await SkillModel.findByIdAndUpdate(req.params.id, {
       skill_name: req.body.skill_name,
     }, {
     new: true
@@ -40,10 +40,10 @@ const updateSkill = asyncHandler(async (req, res) => {
   }
 })
 
-// DELETE  delete skill  /api/skills/:id
+// DELETE  delete skill  /api/skill/:id
 const deleteSkill = asyncHandler(async (req, res) => {
   try {
-    const skill = await SkillsModel.findById(req.params.id)
+    const skill = await SkillModel.findById(req.params.id)
     res.status(200).json(skill)
     return await skill.remove()
   } catch (error) {
