@@ -7,6 +7,7 @@
 - create db, execute the latest minimal dump (from `misc`)
 - `cd portfolio-backend`
 - `cp .env.example .env `
+- `mkdir public public/images`
 - edit `.env` file with db details
 -  `yarn install`
 -  `yarn start` to run project
