@@ -34,8 +34,8 @@ const setProject = asyncHandler(async (req, res) => {
       brand_color: req.body.brand_color,
       main_image: req.files.main_image[0].filename,
       main_image_url: req.files.main_image[0].path.replace('public/', ''),
-      background_image: req.files.background_image[0].filename,
-      background_image_url: req.files.background_image[0].path.replace('public/', ''),
+      background_image: req.files.background_image ? req.files.background_image[0].filename : "",
+      background_image_url: req.files.background_image ? eq.files.background_image[0].path.replace('public/', '') : "",
     })
     res.status(200).json(project)
   } catch (error) {
