@@ -15,7 +15,11 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
-app.use(express.static('public'))
+if(process.env.NODE_ENV === 'development') {
+  app.use(express.static('public'))
+} else {
+  app.use('/images',express.static('/var/data/portfolio-images'))
+}
 
 app.use('/user', require('./routes/userRoutes'))
 app.use('/auth', require('./routes/authRoutes'))
